@@ -65,12 +65,18 @@ export const getPost = async (req, res) =>{
 }
 
 export const getSortedPost = async (req, res) => {
-  await Post.find({})
-    .sort({name: 1})
-    .exec((error, post) => {
-      if(error) return res.status(400).json({message: error});
-      if(post) return res.status(200).json({ post })
-    });
+  // await Post.find({})
+  //   .sort({name: 1})
+  //   .exec((error, post) => {
+  //     if(error) return res.status(400).json({message: error});
+  //     if(post) return res.status(200).json( post )
+  // });
+  try {
+    const post = await Post.find();
+    res.status(200).json(post);
+  } catch (error) {
+    res.status(400).json({error})
+  }
 }
 
 export const getRankedPost = async (req, res) =>{
@@ -100,7 +106,7 @@ export const getRankedPost = async (req, res) =>{
   ])
   .exec((error, post) => {
     if(error) return res.status(400).json({message: error});
-    if(post) return res.status(200).json({ post })
+    if(post) return res.status(200).json(post);
   });
 }
 
@@ -113,7 +119,7 @@ export const getTopThree = async (req, res) =>{
     },
     {
       "$group": {
-        "_id": false,
+        "_id": true,
         "users": {
           "$push": {
             "_id": "$_id",
@@ -134,6 +140,6 @@ export const getTopThree = async (req, res) =>{
   ])
   .exec((error, post) => {
     if(error) return res.status(400).json({message: error});
-    if(post) return res.status(200).json({ post })
+    if(post) return res.status(200).json(post)
   });
 }
